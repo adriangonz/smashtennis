@@ -63,13 +63,13 @@ public class MainActivity extends BaseGameActivity {
 			OnPopulateSceneCallback pOnPopulateSceneCallback)
 			throws IOException {
 		
-		mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
+		/*mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 	            SceneManager.getInstance().createMenuScene();
 			}
-		}));
+		}));*/
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 	}
 	
