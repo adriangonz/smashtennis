@@ -24,7 +24,7 @@ public class ResourcesManager {
 	private static final ResourcesManager INSTANCE = new ResourcesManager();
 	
 	public Engine engine;
-	public MainActivity activity;
+	public SmashTennis activity;
 	public BoundCamera camera;
 	public VertexBufferObjectManager vbom;
 	
@@ -140,7 +140,7 @@ public class ResourcesManager {
 	
 	public void loadSplashScreen() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 470, 790, TextureOptions.BILINEAR);
+		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 480, 800, TextureOptions.BILINEAR);
 		splash_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splash.png", 0, 0);
 		splashTextureAtlas.load();
 	}
@@ -150,7 +150,7 @@ public class ResourcesManager {
 		splash_region = null;
 	}
 	
-	public static void prepareManager(Engine engine, MainActivity activity, Camera camera, VertexBufferObjectManager vbom) {
+	public static void prepareManager(Engine engine, SmashTennis activity, Camera camera, VertexBufferObjectManager vbom) {
 		getInstance().engine = engine;
 		getInstance().camera = (BoundCamera) camera;
 		getInstance().activity = activity;
