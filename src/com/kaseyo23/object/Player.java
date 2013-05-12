@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.object;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -12,6 +12,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.kaseyo23.manager.ResourcesManager;
 
 public class Player extends AnimatedSprite {
 

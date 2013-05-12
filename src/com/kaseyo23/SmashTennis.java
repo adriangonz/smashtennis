@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23;
 
 import java.io.IOException;
 
@@ -15,8 +15,8 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import com.kaseyo23.smashtennis.ResourcesManager;
-import com.kaseyo23.smashtennis.SceneManager;
+import com.kaseyo23.manager.ResourcesManager;
+import com.kaseyo23.manager.SceneManager;
 
 import android.os.Bundle;
 import android.app.Activity;

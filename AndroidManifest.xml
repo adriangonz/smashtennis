@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         
         <activity
-            android:name="com.kaseyo23.smashtennis.SmashTennis"
+            android:name="com.kaseyo23.SmashTennis"
             android:configChanges="orientation"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait" >

@@ -1,10 +1,12 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.extras;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
+import com.kaseyo23.manager.ResourcesManager;
 
 public class LevelCompleteWindow extends Sprite
 {

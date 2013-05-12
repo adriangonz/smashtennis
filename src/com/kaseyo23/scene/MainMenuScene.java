@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.scene;
 
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -9,7 +9,9 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
 import org.andengine.engine.camera.Camera;
 
-import com.kaseyo23.smashtennis.SceneManager.SceneType;
+import com.kaseyo23.base.BaseScene;
+import com.kaseyo23.manager.SceneManager;
+import com.kaseyo23.manager.SceneManager.SceneType;
 
 public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {
 	

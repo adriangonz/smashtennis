@@ -1,10 +1,16 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.manager;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
+
+import com.kaseyo23.base.BaseScene;
+import com.kaseyo23.scene.GameScene;
+import com.kaseyo23.scene.LoadingScene;
+import com.kaseyo23.scene.MainMenuScene;
+import com.kaseyo23.scene.SplashScene;
 
 public class SceneManager {
 	private BaseScene splashScene,

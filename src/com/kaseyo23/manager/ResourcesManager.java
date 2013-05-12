@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.manager;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
@@ -19,6 +19,8 @@ import org.andengine.opengl.vbo.VertexBufferObject;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.util.debug.Debug;
+
+import com.kaseyo23.SmashTennis;
 
 public class ResourcesManager {
 	private static final ResourcesManager INSTANCE = new ResourcesManager();

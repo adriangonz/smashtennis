@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.base;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
@@ -6,7 +6,9 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-import com.kaseyo23.smashtennis.SceneManager.SceneType;
+import com.kaseyo23.manager.ResourcesManager;
+import com.kaseyo23.manager.SceneManager;
+import com.kaseyo23.manager.SceneManager.SceneType;
 
 import android.app.Activity;
 

@@ -1,4 +1,4 @@
-package com.kaseyo23.smashtennis;
+package com.kaseyo23.scene;
 
 import java.io.IOException;
 
@@ -46,31 +46,36 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.kaseyo23.smashtennis.LevelCompleteWindow.StarsCount;
-import com.kaseyo23.smashtennis.SceneManager.SceneType;
+import com.kaseyo23.base.BaseScene;
+import com.kaseyo23.extras.LevelCompleteWindow.StarsCount;
+import com.kaseyo23.manager.SceneManager;
+import com.kaseyo23.manager.SceneManager.SceneType;
+import com.kaseyo23.object.Ball;
+import com.kaseyo23.object.Player;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, SensorEventListener {
 	
+	//// CONSTANTES
+	private final float MAX_BALL_VEL = 300.f;
+	private final float MAX_BALL_ANGLE = 135.f;
+	private final float MIN_BALL_ANGLE = 45.f;
+	private final float MAX_DIFF_X = 50.f;
+	private final float MAX_DIFF_Y = 100.f;
+	
+	//// ATRIBUTOS
 	private HUD gameHUD;
 	private Text scoreText;
+	private PhysicsWorld physicsWorld;
 	
 	private Player player;
+	private Ball ball;
+	
+	private boolean firstTouch = false;
 	
 	private float accelSpeedX, factorAccel = 1.5f;
 	private SensorManager sensorManager;
 	
-	@Override
-	public void createScene() {
-		createBackground();
-		createHUD();
-		createPlayer();
-		setOnSceneTouchListener(this);
-		sensorManager = (SensorManager) activity.getSystemService(activity.SENSOR_SERVICE);
-		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),sensorManager.SENSOR_DELAY_GAME);
-		
-		createHandlers();
-	}
-
+	//// METODOS INTERNOS DEL JUEGO
 	@Override
 	public void onBackKeyPressed() {
 		SceneManager.getInstance().loadMenuScene(engine);
@@ -80,11 +85,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	public SceneType getSceneType() {
 		return SceneType.SCENE_GAME;
 	}
-
+	
+	//// METODOS CREADORES
 	@Override
-	public void disposeScene() {
-		camera.setHUD(null);
-		camera.setCenter(camera.getWidth()/2f, camera.getHeight()/2f);
+	public void createScene() {
+		createPhysics();
+		createBackground();
+		createHUD();
+		createPlayer();
+		createBall();
+		setOnSceneTouchListener(this);
+		sensorManager = (SensorManager) activity.getSystemService(activity.SENSOR_SERVICE);
+		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),sensorManager.SENSOR_DELAY_GAME);
+		
+		createHandlers();
 	}
 	
 	private void createBackground() {
@@ -101,6 +115,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	private void createPlayer() {
 		player = new Player(camera.getWidth()/2f, 200, vbom, camera);
 		attachChild(player);
+	}
+	
+	private void createBall() {
+		ball = new Ball(camera.getWidth()/2f, 250, vbom, physicsWorld, camera);
+		attachChild(ball);
+	}
+	
+	private void createPhysics()
+	{
+		physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false); 
+		//physicsWorld.setContactListener(contactListener());
+		registerUpdateHandler(physicsWorld);
 	}
 	
 	private void createHUD() {
@@ -132,11 +158,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 		});
 	}
 	
+	///// METODOS DESTRUCTORES
+	@Override
+	public void disposeScene() {
+		camera.setHUD(null);
+		camera.setCenter(camera.getWidth()/2f, camera.getHeight()/2f);
+	}
+	
+	///// METODOS ACTUALIZADORES
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		if(pSceneTouchEvent.isActionDown()) {
+			if(!firstTouch) {
+				firstTouch = true;
+				ball.startMoving();
+			}
 			
+			updateBallMovement();
 		}
+		
 		return false;
 	}
 
@@ -154,6 +194,35 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 		}
 	}
 	
+	private void updateBallMovement() {
+		//Obtenemos la diferencia en Y y en X entre el jugador y la bola
+		float diff_y = ball.getY() - player.getY();
+		float diff_x = ball.getX() - player.getX();
+		
+		//Si esta muy lejos, o ha sobrepasado al jugador, ignoramos el tap
+		if(diff_y > MAX_DIFF_Y) return;
+		if(diff_y < 0.f) return;
+		if(Math.abs(diff_x) > MAX_DIFF_X) return;
+		
+		//Obtenemos la velocidad que le daremos en Y a la bola
+		//(cuanto mas cerca, mas fuerte)
+		float vel = MAX_BALL_VEL / (diff_y + 1.f);
+		
+		//Obtenemos el desplazamiento en horizontal de la bola
+		//Cuanto mas "esquinado" mas en lateral ira
+		diff_x = -diff_x;
+		diff_x += MAX_DIFF_X;
+		float max_angle = MAX_BALL_ANGLE - MIN_BALL_ANGLE;
+		float factor = max_angle / (MAX_DIFF_X * 2.f);
+		float angle = diff_x * factor;
+		angle += MIN_BALL_ANGLE;
+		
+		System.out.println("Diff_Y: " + diff_y + " Diff_X: " + diff_x);
+		System.out.println("Ola ke ase Box2D: (" + angle + "," + vel + ")");
+		
+		ball.setMoviento((float)Math.toRadians(angle), vel);
+	}
+	
 	private void updatePlayerPosition() {
 		if(accelSpeedX == 0) return;
 		
@@ -165,6 +234,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 			x_actual = 0;
 		else if(x_actual >= camera.getWidth())
 			x_actual = camera.getWidth();
+		
+		if(!firstTouch) //Si aun no ha sacado, movemos la bola con el jugador
+			ball.setX(x_actual);
 		
 		player.setX(x_actual);
 	}
