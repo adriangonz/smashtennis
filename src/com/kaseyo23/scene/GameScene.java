@@ -6,6 +6,7 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
@@ -51,6 +52,7 @@ import com.kaseyo23.extras.LevelCompleteWindow.StarsCount;
 import com.kaseyo23.manager.SceneManager;
 import com.kaseyo23.manager.SceneManager.SceneType;
 import com.kaseyo23.object.Ball;
+import com.kaseyo23.object.Marcador;
 import com.kaseyo23.object.Player;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, SensorEventListener {
@@ -62,13 +64,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	private final float MAX_DIFF_X = 50.f;
 	private final float MAX_DIFF_Y = 100.f;
 	
+	public static final float DIST_PLAYERS = 550.f;
+	public static float PLAYER_Y_INIT;
+	
+	public static final int PLAYER = 0, MAQUINA = 1;
+	
 	//// ATRIBUTOS
 	private HUD gameHUD;
-	private Text scoreText;
 	private PhysicsWorld physicsWorld;
 	
 	private Player player;
 	private Ball ball;
+	private Marcador marcador;
 	
 	private boolean firstTouch = false;
 	
@@ -89,9 +96,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	//// METODOS CREADORES
 	@Override
 	public void createScene() {
+		initParams();
 		createPhysics();
 		createBackground();
-		createHUD();
+		createMarcador();
 		createPlayer();
 		createBall();
 		setOnSceneTouchListener(this);
@@ -99,6 +107,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),sensorManager.SENSOR_DELAY_GAME);
 		
 		createHandlers();
+	}
+	
+	private void initParams() {
+		PLAYER_Y_INIT = (camera.getHeight() - DIST_PLAYERS) / 2.f;
 	}
 	
 	private void createBackground() {
@@ -113,39 +125,35 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	}
 	
 	private void createPlayer() {
-		player = new Player(camera.getWidth()/2f, 200, vbom, camera);
+		player = new Player(camera.getWidth()/2f, PLAYER_Y_INIT, vbom, camera);
 		attachChild(player);
 	}
 	
+	private void createMarcador() {
+		marcador = new Marcador(camera, vbom, resourcesManager.font);
+		
+		gameHUD = new HUD();
+		gameHUD.attachChild(marcador);
+		camera.setHUD(gameHUD);
+	}
+	
 	private void createBall() {
-		ball = new Ball(camera.getWidth()/2f, 250, vbom, physicsWorld, camera);
+		ball = new Ball(camera.getWidth()/2f, PLAYER_Y_INIT + 50.f, vbom, physicsWorld, camera, marcador);
 		attachChild(ball);
 	}
 	
 	private void createPhysics()
-	{
+	{	
 		physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false); 
 		//physicsWorld.setContactListener(contactListener());
 		registerUpdateHandler(physicsWorld);
 	}
 	
-	private void createHUD() {
-		gameHUD = new HUD();
-		camera.setHUD(gameHUD);
-		
-		scoreText = new Text(20, camera.getHeight() - 100, resourcesManager.font, "Score: 0123456789", new TextOptions(HorizontalAlign.LEFT), vbom);
-		scoreText.setAnchorCenter(0, 0);
-		scoreText.setText("Score: 0");
-		gameHUD.attachChild(scoreText);
-		
-		camera.setHUD(gameHUD);
-	}
-	
 	private void createHandlers() {
 		engine.registerUpdateHandler(new IUpdateHandler() {
-
+			
 			@Override
-			public void onUpdate(float pSecondsElapsed) {
+			public void onUpdate(float pSecondsElapsed) {				
 				updatePlayerPosition();
 			}
 
@@ -169,11 +177,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		if(pSceneTouchEvent.isActionDown()) {
-			if(!firstTouch) {
-				firstTouch = true;
-				ball.startMoving();
-			}
-			
 			updateBallMovement();
 		}
 		
@@ -217,9 +220,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 		float angle = diff_x * factor;
 		angle += MIN_BALL_ANGLE;
 		
-		System.out.println("Diff_Y: " + diff_y + " Diff_X: " + diff_x);
-		System.out.println("Ola ke ase Box2D: (" + angle + "," + vel + ")");
-		
 		ball.setMoviento((float)Math.toRadians(angle), vel);
 	}
 	
@@ -234,9 +234,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 			x_actual = 0;
 		else if(x_actual >= camera.getWidth())
 			x_actual = camera.getWidth();
-		
-		if(!firstTouch) //Si aun no ha sacado, movemos la bola con el jugador
-			ball.setX(x_actual);
 		
 		player.setX(x_actual);
 	}
