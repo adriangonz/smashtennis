@@ -60,16 +60,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    menuChildScene.setPosition(0, 0);
 	    
 	    final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.2f, 1);
-	    final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, resourcesManager.options_region, vbom), 1.2f, 1);
+	    //final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, resourcesManager.options_region, vbom), 1.2f, 1);
 	    
-	    menuChildScene.addMenuItem(optionsMenuItem);
+	    //menuChildScene.addMenuItem(optionsMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
 	    
 	    menuChildScene.buildAnimations();
 	    menuChildScene.setBackgroundEnabled(false);
 	    
-	    playMenuItem.setPosition(playMenuItem.getX(), 350.f);
-	    optionsMenuItem.setPosition(optionsMenuItem.getX(), 225.f);
+	    playMenuItem.setPosition(playMenuItem.getX(), 400.f);
+	    //optionsMenuItem.setPosition(optionsMenuItem.getX(), 225.f);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
 	    

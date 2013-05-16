@@ -2,6 +2,7 @@ package com.kaseyo23.object;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
@@ -12,12 +13,19 @@ import org.andengine.util.adt.color.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.kaseyo23.manager.ResourcesManager;
 import com.kaseyo23.scene.GameScene;
 
-public class Ball extends Rectangle {
+public class Ball extends Sprite {
 	
 	//// CONSTANTES
-	final float BALL_MAX_SCALE = 2.f;
+	private final float BALL_MAX_SCALE = 2.f;
+
+	private final float MAX_BALL_VEL = 300.f;
+	private final float MAX_BALL_ANGLE = 135.f;
+	private final float MIN_BALL_ANGLE = 45.f;
+	private final float MAX_DIFF_X = 50.f;
+	private final float MAX_DIFF_Y = 100.f;
 	
 	//// ATRIBUTOS
 	private Body body;
@@ -31,8 +39,7 @@ public class Ball extends Rectangle {
 	///// CONSTRUCTOR
 	
 	public Ball(float pX, float pY, VertexBufferObjectManager vbom, PhysicsWorld physicsWorld, Camera camera, Marcador marcador) {
-		super(pX, pY, 10.f, 10.f, vbom);
-		setColor(Color.RED);
+		super(pX, pY, 10.f, 10.f, ResourcesManager.getInstance().ball_region, vbom);
 		createPhysics(physicsWorld, camera);
 		this.marcador = marcador;
 		this.camera = camera;
@@ -53,8 +60,37 @@ public class Ball extends Rectangle {
 		});
 	}
 	
-	///// Setters
-	public void setMoviento(float angulo, float vel) {
+	///// UPDATERS
+	
+	public void updateMovimiento(Actor actor) {
+		//Obtenemos la diferencia en Y y en X entre el jugador y la bola
+		float diff_y = this.getY() - actor.getY();
+		float diff_x = this.getX() - actor.getX();
+		
+		//Si esta muy lejos, o ha sobrepasado al jugador, ignoramos el tap
+		if(diff_y > MAX_DIFF_Y) return;
+		if(diff_y < 0.f) return;
+		if(Math.abs(diff_x) > MAX_DIFF_X) return;
+		
+		//Obtenemos la velocidad que le daremos en Y a la bola
+		//(cuanto mas cerca, mas fuerte)
+		float vel = MAX_BALL_VEL / (diff_y + 1.f);
+		
+		//Obtenemos el desplazamiento en horizontal de la bola
+		//Cuanto mas "esquinado" mas en lateral ira
+		diff_x = -diff_x;
+		diff_x += MAX_DIFF_X;
+		float max_angle = MAX_BALL_ANGLE - MIN_BALL_ANGLE;
+		float factor = max_angle / (MAX_DIFF_X * 2.f);
+		float angle = diff_x * factor;
+		angle += MIN_BALL_ANGLE;
+		
+		this.setMovimiento((float)Math.toRadians(angle), vel);
+	}
+	
+	///// SETTERS
+	
+	public void setMovimiento(float angulo, float vel) {
 		this.angulo = angulo;
 		this.vel = vel;
 	}
