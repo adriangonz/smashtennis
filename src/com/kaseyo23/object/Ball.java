@@ -20,10 +20,10 @@ public class Ball extends Sprite {
 	
 	//// CONSTANTES
 	private final float BALL_MAX_SCALE = 2.f;
-
-	private final float MAX_BALL_VEL = 300.f;
-	private final float MAX_BALL_ANGLE = 135.f;
-	private final float MIN_BALL_ANGLE = 45.f;
+	
+	private final float BALL_MAX_VEL = 300.f;
+	private final float BALL_MAX_ANGLE = 135.f;
+	private final float BALL_MIN_ANGLE = 45.f;
 	private final float MAX_DIFF_X = 50.f;
 	private final float MAX_DIFF_Y = 100.f;
 	
@@ -62,35 +62,44 @@ public class Ball extends Sprite {
 	
 	///// UPDATERS
 	
-	public void updateMovimiento(Actor actor) {
-		//Obtenemos la diferencia en Y y en X entre el jugador y la bola
+	public void updateMovement(Actor actor) {
+		//Obtenemos la diferencia en Y y en X entre el actor y la bola
 		float diff_y = this.getY() - actor.getY();
 		float diff_x = this.getX() - actor.getX();
 		
-		//Si esta muy lejos, o ha sobrepasado al jugador, ignoramos el tap
+		//Si es la maquina, invertimos de diff_y porque esta
+		//del otro lado
+		if(actor.getTipo() == Actor.MAQUINA)
+			diff_y = -diff_y; 
+		
+		//Si esta muy lejos, o ha sobrepasado al actor, ignoramos el tap
 		if(diff_y > MAX_DIFF_Y) return;
 		if(diff_y < 0.f) return;
 		if(Math.abs(diff_x) > MAX_DIFF_X) return;
 		
 		//Obtenemos la velocidad que le daremos en Y a la bola
 		//(cuanto mas cerca, mas fuerte)
-		float vel = MAX_BALL_VEL / (diff_y + 1.f);
-		
+		float vel = BALL_MAX_VEL / (diff_y + 1.f);
+
 		//Obtenemos el desplazamiento en horizontal de la bola
 		//Cuanto mas "esquinado" mas en lateral ira
 		diff_x = -diff_x;
 		diff_x += MAX_DIFF_X;
-		float max_angle = MAX_BALL_ANGLE - MIN_BALL_ANGLE;
+		float max_angle = BALL_MAX_ANGLE - BALL_MIN_ANGLE;
 		float factor = max_angle / (MAX_DIFF_X * 2.f);
 		float angle = diff_x * factor;
-		angle += MIN_BALL_ANGLE;
+		angle += BALL_MIN_ANGLE;
 		
-		this.setMovimiento((float)Math.toRadians(angle), vel);
+		//Si es la maquina, invertimos el angulo 180 grados
+		if(actor.getTipo() == Actor.MAQUINA)
+			angle += 180.f;
+		
+		this.setMovement((float)Math.toRadians(angle), vel);
 	}
 	
 	///// SETTERS
 	
-	public void setMovimiento(float angulo, float vel) {
+	public void setMovement(float angulo, float vel) {
 		this.angulo = angulo;
 		this.vel = vel;
 	}
@@ -100,6 +109,7 @@ public class Ball extends Sprite {
 		//Reset params
 		this.angulo = 0.f;
 		this.vel = 0.f;
+		this.setScale(1.f);
 		
 		//Move Box2D body
 		float x = camera.getWidth() / 2.f;
@@ -142,21 +152,21 @@ public class Ball extends Sprite {
 				x_max = this.camera.getWidth(), y_max = this.camera.getHeight();
 		
 		if(y > y_max) {
-			marcador.addPunto(GameScene.PLAYER);
+			marcador.addPunto(Actor.PLAYER);
 			setPosInit();
 		} else if(y < 0) {
-			marcador.addPunto(GameScene.MAQUINA);
+			marcador.addPunto(Actor.MAQUINA);
 			setPosInit();
 		} else if(y < y_max/2.f) {
 			//Esta por debajo de la red
 			if(x < 0 || x > x_max) {
-				marcador.addPunto(GameScene.MAQUINA);
+				marcador.addPunto(Actor.MAQUINA);
 				setPosInit();
 			}
 		} else {
 			//Esta por encima de la red
 			if(x < 0 || x > x_max) {
-				marcador.addPunto(GameScene.PLAYER);
+				marcador.addPunto(Actor.PLAYER);
 				setPosInit();
 			}
 		}

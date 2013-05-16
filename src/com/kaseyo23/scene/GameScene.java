@@ -63,8 +63,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	public static final float DIST_PLAYERS = 550.f;
 	public static float PLAYER_Y_INIT;
 	
-	public static final int PLAYER = 0, MAQUINA = 1;
-	
 	//// ATRIBUTOS
 	private HUD gameHUD;
 	private PhysicsWorld physicsWorld;
@@ -95,9 +93,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 		createPhysics();
 		createBackground();
 		createMarcador();
+		createBall();
 		createPlayer();
 		createMachine();
-		createBall();
 		setOnSceneTouchListener(this);
 		sensorManager = (SensorManager) activity.getSystemService(activity.SENSOR_SERVICE);
 		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),sensorManager.SENSOR_DELAY_GAME);
@@ -127,7 +125,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	}
 	
 	private void createMachine() {
-		machine = new Machine(camera.getWidth()/2f, PLAYER_Y_INIT + DIST_PLAYERS, vbom, camera);
+		machine = new Machine(camera.getWidth()/2f, PLAYER_Y_INIT + DIST_PLAYERS, vbom, camera, ball, physicsWorld);
 		attachChild(machine);
 	}
 	
@@ -175,7 +173,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, Senso
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		if(pSceneTouchEvent.isActionDown()) {
-			ball.updateMovimiento(player);
+			ball.updateMovement(player);
 		}
 		
 		return false;

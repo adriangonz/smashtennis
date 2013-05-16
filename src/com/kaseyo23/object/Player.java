@@ -20,7 +20,6 @@ public class Player extends Actor {
 	public Player(float pX, float pY, VertexBufferObjectManager vbo,
 					Camera camera) {
 		super(pX, pY, vbo, camera, (ITiledTextureRegion) ResourcesManager.getInstance().player_region);
-		this.setScale(2.5f);
 	}
 	
 	//// INTERFAZ
@@ -36,5 +35,10 @@ public class Player extends Actor {
 		
 		setX(x_nueva);
 		updateSprite(x_nueva - x_actual);
+	}
+	
+	@Override
+	public int getTipo() {
+		return Actor.PLAYER;
 	}
 }

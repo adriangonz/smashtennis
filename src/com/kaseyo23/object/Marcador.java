@@ -62,17 +62,17 @@ public class Marcador extends Rectangle {
 	
 	//Metodo que comprueba si hay algun ganador
 	public int getGanador() {
-		if(juegos[GameScene.PLAYER] == 6)
-			return GameScene.PLAYER;
-		else if(juegos[GameScene.MAQUINA] == 6)
-			return GameScene.MAQUINA;
+		if(juegos[Actor.PLAYER] == 6)
+			return Actor.PLAYER;
+		else if(juegos[Actor.MAQUINA] == 6)
+			return Actor.MAQUINA;
 		
 		return 0;
 	}
 	
 	//Metodo que anyade un punto al jugador que le indiquemos (0 o 1)
 	public void addPunto(int jugador) {
-		if(jugador != GameScene.PLAYER && jugador != GameScene.MAQUINA) return;
+		if(jugador != Actor.PLAYER && jugador != Actor.MAQUINA) return;
 		
 		puntos[jugador]++;
 		
@@ -115,7 +115,7 @@ public class Marcador extends Rectangle {
 	
 	//Metodo que actualiza los textos del marcador
 	private void updatePuntuacion() {
-		scorePlayer.setText(getStringPuntos(GameScene.PLAYER));
-		scoreMaquina.setText(getStringPuntos(GameScene.MAQUINA));
+		scorePlayer.setText(getStringPuntos(Actor.PLAYER));
+		scoreMaquina.setText(getStringPuntos(Actor.MAQUINA));
 	}
 }

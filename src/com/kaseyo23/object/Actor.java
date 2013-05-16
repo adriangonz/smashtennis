@@ -5,10 +5,10 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-import com.kaseyo23.manager.ResourcesManager;
-
-public class Actor extends AnimatedSprite {
+public abstract class Actor extends AnimatedSprite {
 	////CONSTANTES
+	public static final int PLAYER = 0, MAQUINA = 1;
+	
 	protected final long[] ACTOR_ANIMATE = new long[]{100, 100, 100, 100};
 	protected final int ACTOR_STAND_INDEX = 0;
 	protected final int ACTOR_RIGHT_START_INDEX = 5;
@@ -29,13 +29,17 @@ public class Actor extends AnimatedSprite {
 		super(pX, pY, region, vbo);
 		this.camera = camera;
 		this.sentidoAnterior = 0;
-		this.setScale(2.f);
+		this.setScale(2.5f);
 	}
+	
+	//// GETTERS
+	
+	// Devuelve el tipo de actor
+	public abstract int getTipo();
 	
 	////HELPERS
 	
 	protected void updateSprite(float diff) {
-		System.out.println("Diferencia: " + diff);
 		if(Math.abs(diff) <= ACTOR_TOLERANCIA) {
 			//Si no nos movemos y antes nos moviamos
 			//paramos el sprite
