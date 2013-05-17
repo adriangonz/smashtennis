@@ -60,6 +60,14 @@ public abstract class Actor extends AnimatedSprite {
 	
 	////CONSTRUCTOR
 	
+	/**
+	 * Constructor del actor
+	 * @param pX Posicion en X inicial
+	 * @param pY Posicion en Y inicial
+	 * @param vbo Puntero al VertexBuffer
+	 * @param camera Puntero a la camara
+	 * @param region Textura con tiles del actor
+	 */
 	public Actor(float pX, float pY, VertexBufferObjectManager vbo,
 					Camera camera, ITiledTextureRegion region) {
 		super(pX, pY, region, vbo);
@@ -70,11 +78,19 @@ public abstract class Actor extends AnimatedSprite {
 	
 	//// GETTERS
 	
-	// Devuelve el tipo de actor
+	/**
+	 * Devuelve el tipo de actor
+	 * @return PLAYER o MAQUINA
+	 */
 	public abstract int getTipo();
 	
 	////HELPERS
 	
+	/**
+	 * Metodo privado que recibe la diferencia entre la posicion actual
+	 * y a la que se mueve para animar y settear el indice del tile actual
+	 * @param diff Diferencia de movimiento
+	 */
 	protected void updateSprite(float diff) {
 		if(Math.abs(diff) <= ACTOR_TOLERANCIA) {
 			//Si no nos movemos y antes nos moviamos
