@@ -5,21 +5,57 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+/**
+ * @class Actor
+ * Actor del juego basado en un AnimatedSprite,
+ * que se encarga de cambiar los indices de las 'tiles'
+ * en funcion del movimiento (hacia la izquierda, hacia
+ * la derecha o parado). 
+ */
 public abstract class Actor extends AnimatedSprite {
 	////CONSTANTES
+	
+	/**
+	 * Constantes estaticas que indican los tipos
+	 * de actores posibles (jugador o maquina).
+	 */
 	public static final int PLAYER = 0, MAQUINA = 1;
 	
+	/**
+	 * Constantes que indica el tiempo que esta en cada tile
+	 * cuando se mueve hacia un lado u otro
+	 */
 	protected final long[] ACTOR_ANIMATE = new long[]{100, 100, 100, 100};
+	
+	/**
+	 * Constantes con los indices de las tiles
+	 */
 	protected final int ACTOR_STAND_INDEX = 0;
 	protected final int ACTOR_RIGHT_START_INDEX = 5;
 	protected final int ACTOR_RIGHT_END_INDEX = 8;
 	protected final int ACTOR_LEFT_START_INDEX = 1;
 	protected final int ACTOR_LEFT_END_INDEX = 4;
+	
+	/**
+	 * Tolerancia o umbral que debe superar el movimiento
+	 * para cambiar a los tiles a moverse hacia uno u otro lado
+	 */
 	protected final float ACTOR_TOLERANCIA = 0.25f;
 	
 	//// ATRIBUTOS
 	
+	/**
+	 * Puntero a la camara
+	 */
 	protected Camera camera;
+	
+	/**
+	 * Entero que representa el sentido anterior
+	 * del movimiento. Puede ser:
+	 * -  0. Estaba quieto.
+	 * -  1. Se movia hacia la derecha.
+	 * - -1. Se movia hacia la izquierda
+	 */
 	protected int sentidoAnterior;
 	
 	////CONSTRUCTOR
